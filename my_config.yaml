@@ -1,0 +1,14 @@
+solving:
+  solver:
+    name: copt
+    options: copt-local
+  solver_options:
+    copt-local:
+      Threads: 4
+
+enable:
+  build_cutout: false
+  retrieve_cutout: false
+  retrieve_raster: false
+  retrieve_powerplants: false
+  retrieve_natural_reserves: false

@@ -55,36 +55,38 @@ if config["enable"].get("retrieve_raster", True):
 
 
 
-rule retrieve_powerplants:
-    """retrieve powerplant data from Zenodo bundle"""
-    input:
-        powerplants=storage.http(
-            "https://zenodo.org/records/16810831/files/Global-integrated-Plant-Tracker-July-2025_china.xlsx"
-        ),
-    output:
-        powerplants="resources/data/existing_infrastructure/gem_data_raw/Global-integrated-Plant-Tracker-July-2025_china.xlsx",
-    run:
-        os.makedirs(os.path.dirname(output.powerplants), exist_ok=True)
-        shutil.move(input.powerplants, output.powerplants)
+if config["enable"].get("retrieve_powerplants", True):
+    rule retrieve_powerplants:
+        """retrieve powerplant data from Zenodo bundle"""
+        input:
+            powerplants=storage.http(
+                "https://zenodo.org/records/16810831/files/Global-integrated-Plant-Tracker-July-2025_china.xlsx"
+            ),
+        output:
+            powerplants="resources/data/existing_infrastructure/gem_data_raw/Global-integrated-Plant-Tracker-July-2025_china.xlsx",
+        run:
+            os.makedirs(os.path.dirname(output.powerplants), exist_ok=True)
+            shutil.move(input.powerplants, output.powerplants)
 
 
 # Fetch protected areas
-rule retrieve_natural_reserves:
-    """retrieve natural reserves from Zenodo bundle"""
-    input:
-        natural_reserves=storage.http(
-            "https://zenodo.org/records/17719794/files/protected_areas_zenodo_14875797.zip"
-        ),
-    output:
-        natural_reserves=directory("resources/data/landuse_availability/protected_areas_zenodo_14875797"),
-        shpfile = "resources/data/landuse_availability/protected_areas_zenodo_14875797/shapes.shp",
-    params:
-        zip_file="resources/data/landuse_availability/protected_areas_zenodo_14875797.zip",
-    run:
-        os.rename(input.natural_reserves, params.zip_file)
-        with ZipFile(params.zip_file, "r") as zip_ref:
-            zip_ref.extractall(os.path.dirname(params.zip_file))
-        os.remove(params.zip_file)
+if config["enable"].get("retrieve_natural_reserves", True):
+    rule retrieve_natural_reserves:
+        """retrieve natural reserves from Zenodo bundle"""
+        input:
+            natural_reserves=storage.http(
+                "https://zenodo.org/records/17719794/files/protected_areas_zenodo_14875797.zip"
+            ),
+        output:
+            natural_reserves=directory("resources/data/landuse_availability/protected_areas_zenodo_14875797"),
+            shpfile = "resources/data/landuse_availability/protected_areas_zenodo_14875797/shapes.shp",
+        params:
+            zip_file="resources/data/landuse_availability/protected_areas_zenodo_14875797.zip",
+        run:
+            os.rename(input.natural_reserves, params.zip_file)
+            with ZipFile(params.zip_file, "r") as zip_ref:
+                zip_ref.extractall(os.path.dirname(params.zip_file))
+            os.remove(params.zip_file)
 
 
 if config["enable"].get("retrieve_cutout", False) and config["enable"].get(

@@ -19,8 +19,6 @@ import sys
 from copy import deepcopy
 from pathlib import Path
 
-import gurobipy
-
 # get root logger
 logger = logging.getLogger()
 
@@ -528,6 +526,8 @@ def _check_gurobi_license_subprocess() -> bool:
     Returns:
         bool: True if the license check succeeded, False otherwise.
     """
+    import gurobipy
+
     try:
         env = gurobipy.Env(empty=True)
         env.start()  # Start the Gurobi environment (this will attempt to acquire the license)
